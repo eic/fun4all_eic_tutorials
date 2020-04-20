@@ -6,6 +6,7 @@ The ConvertFile.C ROOT macro uses BuildTree() from eic-smear to convert the
 event generator output to a root file with a common format. The macro defaults 
 to the provided Milou file MILOU_5x100_TOTAL_01_20evt.out, converting all 
 events (Nevents=0)
+
 Usage:
 
 root.exe
