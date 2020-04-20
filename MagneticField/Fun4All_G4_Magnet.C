@@ -1,19 +1,12 @@
-#if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
+#pragma once
 #include <fun4all/SubsysReco.h>
 #include <fun4all/Fun4AllServer.h>
 #include <fun4all/Fun4AllInputManager.h>
 #include <fun4all/Fun4AllDummyInputManager.h>
-#include <fun4all/Fun4AllOutputManager.h>
-#include <fun4all/Fun4AllDstOutputManager.h>
-#include <g4detectors/PHG4DetectorSubsystem.h>
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4histos/G4HitNtuple.h>
-#include <g4main/PHG4ParticleGeneratorBase.h>
-#include <g4main/PHG4ParticleGenerator.h>
-#include <g4main/PHG4SimpleEventGenerator.h>
 #include <g4main/PHG4ParticleGun.h>
 #include <g4main/PHG4Reco.h>
-#include <phfield/PHFieldConfig.h>
 #include <phool/recoConsts.h>
 #include <eicdetectors/BeastMagnetSubsystem.h>
 
@@ -21,7 +14,6 @@ R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libg4detectors.so)
 R__LOAD_LIBRARY(libg4histos.so)
 R__LOAD_LIBRARY(libeicdetectors.so)
-#endif
 
 void Fun4All_G4_Magnet(int nEvents = -1)
 {
@@ -39,6 +31,7 @@ void Fun4All_G4_Magnet(int nEvents = -1)
 
 // replace fieldmap with constant solenoidal field from x/y/z = 0
   bool use_solenoid_field = false;
+
 // make magnet active volume if you want to study the hits
   bool magnet_active=false;
 
