@@ -2,15 +2,11 @@ This tutorial shows the different available fieldmaps (Babar, Beast and Cleo), a
 
 Usage to see one event:
 
+```
 root.exe
-
 .x Fun4All_G4_Magnet.C
-
 .L DisplayOn.C
-
 PHG4Reco *g4 = DisplayOn();
-
 Fun4AllServer *se = Fun4AllServer::instance();
-
 se->run(1);
-
+```
