@@ -19,12 +19,11 @@
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libg4detectors.so)
-  R__LOAD_LIBRARY(libg4histos.so)
+R__LOAD_LIBRARY(libg4histos.so)
 R__LOAD_LIBRARY(libeicdetectors.so)
 #endif
 
-// needs 10000 geantinos to make a decent scan plot
-void Fun4All_G4_Magnet(int nEvents = 10000)
+void Fun4All_G4_Magnet(int nEvents = -1)
 {
 
   ///////////////////////////////////////////
@@ -33,11 +32,14 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
   Fun4AllServer *se = Fun4AllServer::instance();
   recoConsts *rc = recoConsts::instance();
 
+// set magnet you want to run to true
+  bool use_babar = true;
   bool use_beast = false;
-  bool use_babar = false;
-  bool use_cleo = true;
+  bool use_cleo = false;
 
+// replace fieldmap with constant solenoidal field from x/y/z = 0
   bool use_solenoid_field = false;
+// make magnet active volume if you want to study the hits
   bool magnet_active=false;
 
 // if you want to fix the random seed to reproduce results
@@ -45,38 +47,28 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
 // nail this down so I know what the first event looks like...
 //  rc->set_IntFlag("RANDOMSEED",12345); 
 
+  double pz = 1.; // some forward momentum to prevent geantino loopers
+
 // ParticleGun shoots right into the original MyDetector volume
   PHG4ParticleGun *gun = new PHG4ParticleGun();
 //   gun->set_name("pi-");
   gun->set_name("chargedgeantino");
   gun->set_vtx(0, 0, 0); 
-  gun->set_mom(0, 1, 0);
-//   gun->AddParticle("chargedgeantino",0,0.5,0);
-  gun->AddParticle("chargedgeantino",0,2,0);
-  gun->AddParticle("chargedgeantino",0,3,0);
+  gun->set_mom(0, 0.5, pz);
+  gun->AddParticle("chargedgeantino",0,1,pz);
+  gun->AddParticle("chargedgeantino",0,2,pz);
+  gun->AddParticle("chargedgeantino",0,3,pz);
   se->registerSubsystem(gun);
 
-// the PHG4ParticleGenerator makes cones using phi and eta
-//    PHG4ParticleGenerator *gen = new PHG4ParticleGenerator();
-//    gen->set_name("geantino");
-//    gen->set_mom_range(1.0, 1.0);
-//    gen->set_z_range(0.,0.);
-// // experimentally found ranges, they cover the original block
-//    gen->set_vtx(0, 0, 0);
-//    gen->set_phi_range(-14.5/180*TMath::Pi(),14.5/180*TMath::Pi());
-//    gen->set_eta_range(-0.26, 0.26);
-//    se->registerSubsystem(gen);
 //
 // Geant4 setup
 //
   PHG4Reco* g4Reco = new PHG4Reco();
 // setup of G4: 
-//   no field
 //   no saving of geometry: it takes time and we do not do tracking
 //   so we do not need the geometry
   g4Reco->save_DST_geometry(false);
-  double radius;
-  double length;
+
   if (use_beast)
   {
     if (use_solenoid_field)
@@ -92,6 +84,7 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
     beast->set_string_param("GDMPath",(string(getenv("CALIBRATIONROOT")) + string("/Magnet/BeastSolenoid.gdml")));
     beast->set_string_param("TopVolName","SOLENOID");
     beast->SetActive(magnet_active);
+    beast->SuperDetector("MAGNET");
     g4Reco->registerSubsystem(beast);
   }
   else if (use_cleo)
@@ -113,14 +106,13 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
     cyl->set_double_param("length",magnet_length);
     cyl->set_double_param("thickness",magnet_thickness);
     cyl->set_string_param("material","G4_Al");
+    cyl->set_color(0,1,0,1);
     cyl->SuperDetector("MAGNET");
     cyl->SetActive(magnet_active);
     g4Reco->registerSubsystem( cyl );
   }
   else if (use_babar)
   {
-    radius = 142.;
-    length = 361.5;
     if (use_solenoid_field)
     {
       g4Reco->set_field(1.4);
@@ -146,6 +138,7 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
     cyl->set_string_param("material","Al5083"); // use 1 radiation length Al for magnet thickness
     cyl->SuperDetector("MAGNET");
     cyl->SetActive(magnet_active);
+    cyl->set_color(0,0,1,1);
     g4Reco->registerSubsystem( cyl );
 
     cyl = new PHG4CylinderSubsystem("MAGNET", 1);
@@ -156,6 +149,7 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
     cyl->set_string_param("material","Al5083"); // use 1 radiation length Al for magnet thickness
     cyl->SuperDetector("MAGNET");
     cyl->SetActive(magnet_active);
+    cyl->set_color(0,0,1,1);
     g4Reco->registerSubsystem( cyl );
 
     cyl = new PHG4CylinderSubsystem("MAGNET", 2);
@@ -166,17 +160,7 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
     cyl->set_string_param("material","Al5083"); // use 1 radiation length Al for magnet thickness
     cyl->SuperDetector("MAGNET");
     cyl->SetActive(magnet_active);
-    g4Reco->registerSubsystem(cyl);
-  }
-
-
-  if (use_solenoid_field) // we need to kill the loopers
-  {
-    PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem("BH",0);
-    cyl->set_double_param("radius",170.);
-    cyl->set_double_param("thickness",10.);
-    cyl->set_double_param("length",400);
-    cyl->BlackHole();
+    cyl->set_color(0,0,1,1);
     g4Reco->registerSubsystem(cyl);
   }
 
@@ -187,21 +171,13 @@ void Fun4All_G4_Magnet(int nEvents = 10000)
   ///////////////////////////////////////////
 
   G4HitNtuple *hits = new G4HitNtuple("Hits");
-  hits->AddNode("BeastMagnet_0",0);
+  hits->AddNode("MAGNET",0);
   se->registerSubsystem(hits);
-
-  ///////////////////////////////////////////
-  // IOManagers...
-  ///////////////////////////////////////////
-   
-  // Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT","G4Example02.root");
-  // out->Verbosity(10);
-  // se->registerOutputManager(out);
 
 // this (dummy) input manager just drives the event loop
   Fun4AllInputManager *in = new Fun4AllDummyInputManager( "Dummy");
   se->registerInputManager( in );
-// events = 0 => run forever
+// events = 0 => run forever, default is -1, do not run event loop
   if (nEvents <= 0)
   {
     return 0;
