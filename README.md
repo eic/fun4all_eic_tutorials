@@ -1,11 +1,10 @@
 # fun4all_eic_tutorials
 EIC specific Tutorials based on Fun4All
 
-ReadEICGeneratorOutput: 
+* ReadEICGeneratorOutput: 
 
-Read EIC generator output via eic-smear and read resulting root file into 
-Fun4All
+  Read EIC generator output via eic-smear and read resulting root file into Fun4All
 
-MagneticField:
+* MagneticField:
 
-Play with different fieldmaps
+  Play with different fieldmaps
