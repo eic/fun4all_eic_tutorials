@@ -3,7 +3,7 @@
 
 #include "GlobalVariables.C"
 
-#include "G4_Magnet_Beast.C"
+#include "G4_Magnet.C"
 #include "G4_Pipe_EIC.C"
 
 #include <g4eval/PHG4DSTReader.h>
