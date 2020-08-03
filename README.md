@@ -13,8 +13,8 @@ EIC specific Tutorials based on Fun4All
 
   Fun4All.C/G4Setup.C templates for detectors based on the magnets from
 
-** Babar
+  * Babar
 
-** Beast
+  * Beast
 
-** Cleo
+  * Cleo
