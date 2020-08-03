@@ -183,6 +183,9 @@ int Fun4All_G4_Beast(
 
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
+  // leave 1m gap so we can see tracks outside detector, comment out when you
+  // want to use the black hole to measure leakage
+  BlackHoleGeometry::gap = 100.; // leave 1m gap so we can see tracks outside detector
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
 
