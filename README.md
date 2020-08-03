@@ -8,3 +8,13 @@ EIC specific Tutorials based on Fun4All
 * MagneticField:
 
   Play with different fieldmaps
+
+* detectors
+
+  Fun4All.C/G4Setup.C templates for detectors based on the magnets from
+
+** Babar
+
+** Beast
+
+** Cleo
