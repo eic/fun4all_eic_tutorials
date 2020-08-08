@@ -189,6 +189,20 @@ int Fun4All_G4_Babar(
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
 
+  //---------------
+  // World Settings
+  //---------------
+  //  G4WORLD::PhysicsList = "QGSP_BERT"; //FTFP_BERT_HP best for calo
+  //  G4WORLD::WorldMaterial = "G4_AIR"; // set to G4_GALACTIC for material scans
+
+  //---------------
+  // Magnet Settings
+  //---------------
+
+  //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
+  //  G4MAGNET::magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
+  G4MAGNET::magfield_rescale = -1.4 / 1.5;  // make consistent with expected Babar field strength of 1.4T
+
   // establish the geometry and reconstruction setup
   G4Init();
 
